@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mapper nameSpace="com.snowruin.mybatis.demo.dao.UserMapper">
+
+    <select id="selectList" resultType="com.snowruin.mybatis.demo.entity.User">
+            select * from user
+    </select>
+
+    <select id="getUserById" resultType="com.snowruin.mybatis.demo.entity.User">
+        select * from user where id = #{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<database>
+    <property name="driverClassName">com.mysql.jdbc.Driver</property>
+    <property name="username">root</property>
+    <property name="password">123456</property>
+    <property name="url">jdbc:mysql://localhost:3306/mybatis</property>
+</database>

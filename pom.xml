@@ -9,7 +9,8 @@
   <version>1.0-SNAPSHOT</version>
 
   <name>Mybatis</name>
-  <!-- FIXME change it to the project's website -->
+  <description>自己手写一个简易的Mybatis</description>
+
   <url>http://www.snowruin.com</url>
 
   <properties>
@@ -25,6 +26,45 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.6.1</version>
+    </dependency>
+
+    <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>5.1.46</version>
+    </dependency>
+
+    <dependency>
+          <groupId>org.projectlombok</groupId>
+          <artifactId>lombok</artifactId>
+          <version>1.18.4</version>
+          <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>27.0-jre</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.8.0-beta2</version>
+    </dependency>
+
+    <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+          <version>1.8.0-beta2</version>
+    </dependency>
+
+
   </dependencies>
 
   <build>
@@ -61,5 +101,16 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <resources>
+      <resource>
+          <directory>src/main/resources</directory>
+          <includes>
+              <include>**/*.properties</include>
+              <include>**/*.xml</include>
+              <include>**/*.tld</include>
+          </includes>
+          <filtering>true</filtering>
+      </resource>
+  </resources>
   </build>
 </project>
