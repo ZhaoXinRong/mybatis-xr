@@ -2,15 +2,11 @@ package com.snowruin.mybatis.Excutor;
 
 import com.google.common.collect.Lists;
 import com.snowruin.mybatis.Mapper.Function;
-import com.snowruin.mybatis.demo.entity.User;
-import com.snowruin.mybatis.handler.ResultExtractor;
 import com.snowruin.mybatis.session.Configuration;
-import com.snowruin.mybatis.util.MapUtils;
 import com.snowruin.mybatis.util.SqlUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -98,7 +94,7 @@ public abstract class AbstractExecutor implements Executor {
     }
 
 
-    public Object getResultFromList(List<Object> list,Function function,Object [] params,PreparedStatement ps) throws IllegalAccessException {
+    private Object getResultFromList(List<Object> list,Function function,Object [] params,PreparedStatement ps) throws IllegalAccessException {
         Object value = null;
         try {
             Class  targetType = Class.forName(function.getResultType());

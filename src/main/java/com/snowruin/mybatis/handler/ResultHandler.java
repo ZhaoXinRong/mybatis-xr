@@ -16,9 +16,9 @@ public interface ResultHandler {
 
     <T> java.util.Map resultMapHandler(T t) ;
 
-   <T> List<T> resultListHandler(ResultSet resultSet,Class<T> clazz)  throws SQLException;
+    <T> List<T> resultListHandler(ResultSet resultSet,Class<T> clazz)  throws SQLException;
 
-  <T> List<Map<String, Object>> resultListHandler(List<T> list);
+    <T> List<Map<String, Object>> resultListHandler(List<T> list);
 
     <T> T resultPoJoHandler(List<T> list, Class<?> clazz);
 
