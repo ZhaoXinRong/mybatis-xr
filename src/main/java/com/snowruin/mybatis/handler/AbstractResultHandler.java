@@ -15,11 +15,11 @@ import java.util.Map;
 public abstract class AbstractResultHandler implements ResultHandler{
 
     @Override
-    public <T> Map resultMapHandler(T t)  {
-        return mapHandler(t);
+    public <T> Map resultMapHandler(List<T> resultList)  {
+        return mapHandler(resultList);
     }
 
-    protected  abstract  <T> java.util.Map mapHandler(T t) ;
+    protected  abstract  <T> java.util.Map mapHandler(List<T> resultList) ;
 
 
     @Override

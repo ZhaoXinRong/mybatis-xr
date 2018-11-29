@@ -26,4 +26,6 @@ public class Function {
 
     private String parameterType;
 
+    private String methodReturnType;
+
 }

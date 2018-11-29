@@ -19,10 +19,10 @@ import java.util.*;
 public class ResultHandlerImpl extends  AbstractResultHandler {
 
     @Override
-    protected <T>Map mapHandler(T t) {
-        if(t != null){
+    protected <T>Map mapHandler(List<T> resultList) {
+        if(resultList != null && resultList.size() > 0){
             try {
-                return MapUtils.objectToMap(t);
+                return MapUtils.objectToMap(resultList.get(0));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -84,15 +84,15 @@ public class ResultHandlerImpl extends  AbstractResultHandler {
         return resultMap;
     }
 
-    private List resultList(ResultSet resultSet,Class clazz)  throws  SQLException{
+    private <T>List<T> resultList(ResultSet resultSet,Class clazz)  throws  SQLException{
         if(clazz == null){
-           return  resultList(resultSet);
+           return (List<T>) resultList(resultSet);
         }else{
             return resultListPojo(resultSet,clazz);
         }
     }
 
-    public List<Map<String,Object>> resultList(ResultSet resultSet) throws  SQLException{
+    public <T>List<T> resultList(ResultSet resultSet) throws  SQLException{
         ResultSetMetaData metaData = resultSet.getMetaData();
         List<String> columnNames = Lists.newArrayList();
         List<Map<String,Object>> resultList =   Lists.newArrayList();
@@ -111,7 +111,7 @@ public class ResultHandlerImpl extends  AbstractResultHandler {
             }
             resultList.add(map);
         }
-        return resultList;
+        return (List<T>) resultList;
     }
 
     public <T> List<T> resultListPojo(ResultSet resultSet,Class<T> clazz){
@@ -135,4 +135,5 @@ public class ResultHandlerImpl extends  AbstractResultHandler {
         }
         return null;
     }
+
 }

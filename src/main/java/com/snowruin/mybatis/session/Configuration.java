@@ -3,6 +3,7 @@ package com.snowruin.mybatis.session;
 import com.google.common.collect.Lists;
 import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.Mapper.MapperBean;
+import com.snowruin.mybatis.enums.EnumMapper;
 import com.snowruin.mybatis.util.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -10,6 +11,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -134,20 +136,39 @@ public class Configuration {
 
             // 存储方法的list
             List<Function> functions = Lists.newArrayList();
+            String interfaceName =  mapperBean.getInterfaceName().trim();
+            Class<?> aClass = null;
+            try {
+                aClass = Class.forName(interfaceName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
 
             for (Iterator iterator = rootElement.elementIterator(); iterator.hasNext();){
 
                 Element  element = (Element) iterator.next();
                 String sqlType = element.getName().trim();
-                String functionName = element.attributeValue("id").trim();
-                String sql = element.getText();
+                String functionName = element.attributeValue(EnumMapper.SQL_OPTION.getId()).trim();
 
-                String resultType = element.attributeValue("resultType").trim();
+                String sql = element.getText();
+                String parameterType = element.attributeValue(EnumMapper.SQL_OPTION.getParameterType());
+
+                String resultType = element.attributeValue(EnumMapper.SQL_OPTION.getResultType()).trim();
 
                 Function function = new Function()
                         .setFuncName(functionName)
                         .setSqlType(sqlType)
+                        .setParameterType(parameterType)
                         .setResultType(resultType);
+
+                Method[] methods = aClass.getDeclaredMethods();
+
+                for (Method method : methods){
+                    if(method.getName() . equals( functionName )){
+                       String returnType = method.getReturnType().getName();
+                       function.setMethodReturnType(returnType);
+                    }
+                }
                 Object newInstance = null;
 
                 try {

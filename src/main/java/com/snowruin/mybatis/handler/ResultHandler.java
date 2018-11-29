@@ -14,7 +14,7 @@ import java.util.Map;
  **/
 public interface ResultHandler {
 
-    <T> java.util.Map resultMapHandler(T t) ;
+    <T> java.util.Map resultMapHandler(List<T> t) ;
 
     <T> List<T> resultListHandler(ResultSet resultSet,Class<T> clazz)  throws SQLException;
 

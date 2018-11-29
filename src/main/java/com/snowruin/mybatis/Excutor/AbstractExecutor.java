@@ -2,6 +2,7 @@ package com.snowruin.mybatis.Excutor;
 
 import com.google.common.collect.Lists;
 import com.snowruin.mybatis.Mapper.Function;
+import com.snowruin.mybatis.consts.Consts;
 import com.snowruin.mybatis.session.Configuration;
 import com.snowruin.mybatis.util.SqlUtils;
 
@@ -39,17 +40,17 @@ public abstract class AbstractExecutor implements Executor {
             String sqlType = function.getSqlType();
 
             switch (sqlType){
-                case "select" :
+                case Consts . SELECT :
                     List<Object> list = selectList(function,params,preparedStatement);
                     result = getResultFromList(list,function,params,preparedStatement);
                     break;
-                case "update" :
+                case Consts . UPDATE :
                     result = update(function,params,preparedStatement);
                     break;
-                case "delete" :
+                case Consts . DELETE :
                     result = delete(function,params,preparedStatement);
                     break;
-                case "insert" :
+                case Consts . INSERT  :
                     result = insert(function,params,preparedStatement);
                     break;
                 default:
@@ -73,13 +74,13 @@ public abstract class AbstractExecutor implements Executor {
     }
 
 
-    protected  abstract  <T> T selectOne(Function function,Object [] params,PreparedStatement ps);
+    protected  abstract  <T> T selectOne(Function function,Object [] params,List<T> resultList);
 
     protected  abstract  <T> List<T> selectList(Function function,Object [] params,PreparedStatement ps);
 
-    protected  abstract  <T> List<java.util.Map<String,Object>> selectListMap(Function function,Object [] params,PreparedStatement ps);
+    protected  abstract  <T> List<java.util.Map<String,Object>> selectListMap(Function function,Object [] params,List<T> resultList);
 
-    protected  abstract  <T> java.util.Map<String,Object> selectMap(Function function,Object [] params,PreparedStatement ps);
+    protected  abstract  <T> java.util.Map<String,Object> selectMap(Function function,Object [] params,List<T> resultList);
 
 
     protected  abstract  int update(Function function,Object [] params,PreparedStatement ps);
@@ -102,7 +103,7 @@ public abstract class AbstractExecutor implements Executor {
                 List<java.util.Map> mapList =  Lists.newArrayList();
                 Object obj = list.get(0);
                 if(obj.getClass().getSimpleName().equals("Map")){
-                    value = selectListMap(function,params,ps);
+                    value = selectListMap(function,params,list);
                 }else{
                     value = list;
                 }
@@ -110,9 +111,9 @@ public abstract class AbstractExecutor implements Executor {
                 if(list != null && list.size() == 1){
                     Object obj = list.get(0);
                     if(obj.getClass().getSimpleName().equals("Map")){
-                        value = this.selectMap(function,params,ps);
+                        value = this.selectMap(function,params,list);
                     }else{
-                        value = this.selectOne(function,params,ps);
+                        value = this.selectOne(function,params,list);
                     }
                 }
             }

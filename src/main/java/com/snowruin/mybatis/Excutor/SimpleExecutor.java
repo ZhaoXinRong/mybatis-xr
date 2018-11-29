@@ -24,10 +24,9 @@ public class SimpleExecutor extends  AbstractExecutor {
     private ResultHandler resultHandler = new ResultHandlerImpl();
 
     @Override
-    protected <T> T selectOne(Function function, Object[] params, PreparedStatement ps) {
-        List<T> list = selectList(function, params, ps);
+    protected <T> T selectOne(Function function, Object[] params, List<T> resultList) {
         try {
-            return resultHandler.resultPoJoHandler(list,Class.forName(function.getResultType()));
+            return resultHandler.resultPoJoHandler(resultList,Class.forName(function.getResultType()));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -52,15 +51,13 @@ public class SimpleExecutor extends  AbstractExecutor {
     }
 
     @Override
-    protected <T> List<Map<String, Object>> selectListMap(Function function, Object[] params, PreparedStatement ps) {
-        List<T> list = selectList(function, params, ps);
-        return resultHandler.resultListHandler(list);
+    protected <T> List<Map<String, Object>> selectListMap(Function function, Object[] params, List<T> resultList) {
+        return resultHandler.resultListHandler(resultList);
     }
 
     @Override
-    protected <T> Map<String, Object> selectMap(Function function, Object[] params, PreparedStatement ps) {
-        Object o = selectOne(function, params, ps);
-        return resultHandler.resultMapHandler(o);
+    protected <T> Map<String, Object> selectMap(Function function, Object[] params, List<T> resultList) {
+        return resultHandler.resultMapHandler(resultList);
     }
 
     @Override
@@ -103,13 +100,16 @@ public class SimpleExecutor extends  AbstractExecutor {
     private void logger(Function function, Object[] params){
         log.info(">>>>>>>>>>>> : {}",function.getSql().trim());
         StringBuilder sb = new StringBuilder();
-        for (Object param : params){
-            sb.append(param)
-                    .append("(")
-                    .append(param.getClass().getSimpleName())
-                    .append("),");
+        if(params != null && params.length > 0){
+            for (Object param : params){
+                sb.append(param)
+                        .append("(")
+                        .append(param.getClass().getSimpleName())
+                        .append("),");
+            }
+            log.info(">>>>>>>>>>>>> : {}",sb.toString().length() > 0 ? sb.toString().substring(0,sb.toString().lastIndexOf(",")) : "" );
         }
-        log.info(">>>>>>>>>>>>> : {}",sb.toString().length() > 0 ? sb.toString().substring(0,sb.toString().lastIndexOf(",")) : "" );
+
     }
 
 

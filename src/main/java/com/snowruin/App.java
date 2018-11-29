@@ -2,7 +2,10 @@ package com.snowruin;
 
 import com.snowruin.mybatis.demo.dao.UserMapper;
 import com.snowruin.mybatis.demo.entity.User;
+import com.snowruin.mybatis.enums.EnumMapper;
 import com.snowruin.mybatis.session.SqlSession;
+
+import java.util.List;
 
 /**
  * Hello world!
@@ -16,7 +19,12 @@ public class App
 
         SqlSession sqlSession = new SqlSession();
         UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-        User user =  mapper.getUserById(0);
-        System.out.println(user);
+       // User user =  mapper.getUserById(1);
+
+        List<User> users =  mapper.selectList();
+        System.out.println(users);
+
+
+
     }
 }
