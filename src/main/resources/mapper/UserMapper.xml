@@ -23,7 +23,19 @@
 
 
     <insert id="insert" parameterType="com.snowruin.mybatis.demo.entity.User">
-        insert into user(username,password)values(#{username},#{passowrd})
+        insert into user(id,username,password)values(#{id},#{username},#{password})
     </insert>
+
+    <delete id="deleteByUsername" >
+          delete from user where username is null
+    </delete>
+
+    <select id="selectA" parameterType="com.snowruin.mybatis.demo.entity.User" resultType="com.snowruin.mybatis.demo.entity.User">
+        select * from user where username = #{username} and password = #{password}
+    </select>
+
+    <update id="updateById" parameterType="com.snowruin.mybatis.demo.entity.User">
+        update user set username = #{username} , password = #{password} where id = #{id}
+    </update>
 
 </mapper>

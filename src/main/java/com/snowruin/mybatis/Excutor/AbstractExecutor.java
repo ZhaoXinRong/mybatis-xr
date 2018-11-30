@@ -1,9 +1,10 @@
 package com.snowruin.mybatis.Excutor;
 
 import com.snowruin.mybatis.Mapper.Function;
+import com.snowruin.mybatis.Sql.SqlParser;
+import com.snowruin.mybatis.Sql.SqlParserBean;
 import com.snowruin.mybatis.consts.Consts;
 import com.snowruin.mybatis.session.Configuration;
-import com.snowruin.mybatis.util.SqlUtils;
 import com.snowruin.mybatis.util.StringUtils;
 
 import java.sql.Connection;
@@ -28,13 +29,12 @@ public abstract class AbstractExecutor implements Executor {
         Connection connection = this.getConnection();
         PreparedStatement preparedStatement= null;
         try {
-            SqlParser parser =  SqlUtils.sqlParamsParse(function.getSql());
-            function.setSql(parser.getSql());
-            preparedStatement = connection.prepareStatement(parser.getSql().trim());
-
-            int order = parser.getOrder();
+            SqlParserBean sqlParserBean = SqlParser.parser(function, params);
+            preparedStatement = connection.prepareStatement(function.getSql());
+            int order = sqlParserBean.getOrder();
+            List<Object> beanParams = sqlParserBean.getParams();
             for (int i = 1;i<=order;i++ ){
-                preparedStatement.setObject(i,params[i-1]);
+                preparedStatement.setObject(i,beanParams.get(i-1));
             }
             return  handlerResult(new ResultExstractBean(preparedStatement,params,function));
         } catch (SQLException e) {

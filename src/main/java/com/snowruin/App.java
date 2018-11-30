@@ -7,6 +7,7 @@ import com.snowruin.mybatis.session.SqlSession;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Hello world!
@@ -27,9 +28,17 @@ public class App
 
        // String username = mapper.getUsername();
 
-        int count = mapper.selectCount();
+       // int count = mapper.selectCount();
 
-        System.out.println(count);
+//       int i =  mapper.insert(new User().
+//             setUsername("李四").setPassword("11111").setId(UUID.randomUUID().toString()));
+//        int i = mapper.deleteByUsername();
+
+        //User user = mapper.selectA(new User().setUsername("李四1").setPassword("11111"));
+
+        int 王五 = mapper.updateById(new User().setPassword("222").setUsername("王五").setId("b6616d46-122e-4866-8ca3-356f05861c76"));
+
+        System.out.println(王五);
 
 
 

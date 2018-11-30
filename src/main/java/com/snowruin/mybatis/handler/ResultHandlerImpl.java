@@ -81,7 +81,7 @@ public class ResultHandlerImpl extends  AbstractResultHandler {
         if(resultSet.next()){
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
-            for (int i= 1;i<columnCount;i++){
+            for (int i= 1;i<=columnCount;i++){
                 String columnName = metaData.getColumnName(i);
                 Object value = resultSet.getObject(i);
                 resultMap.put(columnName,value);

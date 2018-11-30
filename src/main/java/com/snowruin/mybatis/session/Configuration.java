@@ -156,7 +156,7 @@ public class Configuration {
                 String sql = element.getText();
                 String parameterType = element.attributeValue(EnumMapper.SQL_OPTION.getParameterType());
 
-                String resultType = element.attributeValue(EnumMapper.SQL_OPTION.getResultType()).trim();
+                String resultType = element.attributeValue(EnumMapper.SQL_OPTION.getResultType());
 
                 Function function = new Function()
                         .setFuncName(functionName)

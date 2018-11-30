@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * @ClassName User
  * @Description TODO  用户实体类
@@ -17,7 +19,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @ToString
-public class User {
+public class User implements Serializable {
 
     private String id;
 
