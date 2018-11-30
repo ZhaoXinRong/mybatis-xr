@@ -13,7 +13,6 @@ import org.dom4j.io.SAXReader;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -59,7 +58,7 @@ public class Configuration {
     private Connection evalDataSource(Element element){
 
         if(!element.getName() . equals("database")){
-            throw  new RuntimeException("root should be <database>");
+            throw  new RuntimeException("不是database节点");
         }
 
         String driverClassName = null,
@@ -74,7 +73,7 @@ public class Configuration {
             String name = e.attributeValue("name");
 
             if(StringUtils.isEmpty(value) || StringUtils.isEmpty(name)){
-                throw  new RuntimeException("[database]: <property> should contain name and value");
+                throw  new RuntimeException("配置文件有误，请检查");
             }
 
             // 赋值
@@ -92,7 +91,7 @@ public class Configuration {
                     driverClassName =  value;
                     break;
                     default :
-                        throw  new RuntimeException("[database]: <property> unkown name");
+                        throw  new RuntimeException("不知道的property属性");
             }
         }
 
@@ -172,17 +171,7 @@ public class Configuration {
                                 .setMethod(method);
                     }
                 }
-//                Object newInstance = null;
-//
-//                try {
-//                    newInstance = Class.forName(resultType).newInstance();
-//                } catch (InstantiationException e) {
-//                    e.printStackTrace();
-//                } catch (IllegalAccessException e) {
-//                    e.printStackTrace();
-//                } catch (ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                }
+
                 function.setResultType(resultType)
                         .setSql(sql);
                 functions.add(function);
