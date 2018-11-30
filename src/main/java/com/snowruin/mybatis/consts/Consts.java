@@ -14,8 +14,6 @@ public class Consts {
      */
     public static  final String sqlParamsReg = "#\\{.*?}";
 
-    public static  final String sqlObjectParamsReg = ".*? = #\\{.*?} ";
-
     public static  final String SELECT = "select";
 
     public static  final String UPDATE = "update";
