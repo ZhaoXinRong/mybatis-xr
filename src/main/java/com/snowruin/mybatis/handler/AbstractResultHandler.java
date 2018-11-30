@@ -15,11 +15,11 @@ import java.util.Map;
 public abstract class AbstractResultHandler implements ResultHandler{
 
     @Override
-    public <T> Map resultMapHandler(List<T> resultList)  {
-        return mapHandler(resultList);
+    public <T> Map resultMapHandler(ResultSet resultSet)  {
+        return mapHandler(resultSet);
     }
 
-    protected  abstract  <T> java.util.Map mapHandler(List<T> resultList) ;
+    protected  abstract  <T> java.util.Map mapHandler(ResultSet resultSet) ;
 
 
     @Override
@@ -28,28 +28,52 @@ public abstract class AbstractResultHandler implements ResultHandler{
     }
 
     @Override
-    public <T>List<Map<String, Object>> resultListHandler(List<T> list){
-        return listHandler(list);
+    public <T>List<Map<String, Object>> resultListHandler(ResultSet resultSet){
+        return listHandler(resultSet);
     }
 
-    protected abstract <T> List<Map<String, Object>> listHandler(List<T> list);
+    protected abstract <T> List<Map<String, Object>> listHandler(ResultSet resultSet);
 
     protected abstract <T> List listHandler(ResultSet resultSet, Class<T> clazz);
 
     @Override
-    public <T> T resultPoJoHandler(List<T> list, Class<?> clazz){
-        return pojoHandler(list,clazz);
+    public <T> T resultPoJoHandler(ResultSet resultSet, Class<?> clazz){
+        return pojoHandler(resultSet,clazz);
     }
 
-    protected  abstract  <T> T pojoHandler(List<T> list, Class<?> clazz);
+    protected  abstract  <T> T pojoHandler(ResultSet resultSet, Class<?> clazz);
 
     @Override
-    public int resultIntHandler(Integer result) {
-        return result;
+    public Integer resultIntHandler(ResultSet resultSet) {
+        try {
+            if(resultSet.next()){
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override
-    public String resultStringHandler(String result) {
-        return result;
+    public String resultStringHandler(ResultSet resultSet) {
+        try {
+            if(resultSet.next()){
+                return resultSet.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void close(ResultSet resultSet){
+        if(resultSet != null){
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

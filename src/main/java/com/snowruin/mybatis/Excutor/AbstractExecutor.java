@@ -1,10 +1,10 @@
 package com.snowruin.mybatis.Excutor;
 
-import com.google.common.collect.Lists;
 import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.consts.Consts;
 import com.snowruin.mybatis.session.Configuration;
 import com.snowruin.mybatis.util.SqlUtils;
+import com.snowruin.mybatis.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,32 +36,10 @@ public abstract class AbstractExecutor implements Executor {
             for (int i = 1;i<=order;i++ ){
                 preparedStatement.setObject(i,params[i-1]);
             }
-
-            String sqlType = function.getSqlType();
-
-            switch (sqlType){
-                case Consts . SELECT :
-                    List<Object> list = selectList(function,params,preparedStatement);
-                    result = getResultFromList(list,function,params,preparedStatement);
-                    break;
-                case Consts . UPDATE :
-                    result = update(function,params,preparedStatement);
-                    break;
-                case Consts . DELETE :
-                    result = delete(function,params,preparedStatement);
-                    break;
-                case Consts . INSERT  :
-                    result = insert(function,params,preparedStatement);
-                    break;
-                default:
-                    throw  new RuntimeException("请检查Mapper中配置是否正确");
-            }
-            return result;
+            return  handlerResult(new ResultExstractBean(preparedStatement,params,function));
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } finally {
+        }finally {
             if(preparedStatement != null){
                 try {
                     preparedStatement.close();
@@ -74,20 +52,20 @@ public abstract class AbstractExecutor implements Executor {
     }
 
 
-    protected  abstract  <T> T selectOne(Function function,Object [] params,List<T> resultList);
+    protected  abstract  <T> T selectOne(ResultExstractBean resultExstractBean);
 
-    protected  abstract  <T> List<T> selectList(Function function,Object [] params,PreparedStatement ps);
+    protected  abstract  <T> List<T> selectList(ResultExstractBean resultExstractBean);
 
-    protected  abstract  <T> List<java.util.Map<String,Object>> selectListMap(Function function,Object [] params,List<T> resultList);
+    protected  abstract  <T> List<java.util.Map<String,Object>> selectListMap(ResultExstractBean resultExstractBean);
 
-    protected  abstract  <T> java.util.Map<String,Object> selectMap(Function function,Object [] params,List<T> resultList);
+    protected  abstract  <T> java.util.Map<String,Object> selectMap(ResultExstractBean resultExstractBean);
 
 
-    protected  abstract  int update(Function function,Object [] params,PreparedStatement ps);
+    protected  abstract  int update(ResultExstractBean resultExstractBean);
 
-    protected  abstract  int delete(Function function,Object [] params,PreparedStatement ps);
+    protected  abstract  int delete(ResultExstractBean resultExstractBean);
 
-    protected  abstract  int insert(Function function,Object [] params,PreparedStatement ps);
+    protected  abstract  int insert(ResultExstractBean resultExstractBean);
 
 
     private Connection getConnection(){
@@ -95,32 +73,50 @@ public abstract class AbstractExecutor implements Executor {
     }
 
 
-    private Object getResultFromList(List<Object> list,Function function,Object [] params,PreparedStatement ps) throws IllegalAccessException {
-        Object value = null;
-        try {
-            Class  targetType = Class.forName(function.getResultType());
-            if(targetType .isAssignableFrom(List.class)){
-                List<java.util.Map> mapList =  Lists.newArrayList();
-                Object obj = list.get(0);
-                if(obj.getClass().getSimpleName().equals("Map")){
-                    value = selectListMap(function,params,list);
-                }else{
-                    value = list;
-                }
-            }else{
-                if(list != null && list.size() == 1){
-                    Object obj = list.get(0);
-                    if(obj.getClass().getSimpleName().equals("Map")){
-                        value = this.selectMap(function,params,list);
+    private Object handlerResult(ResultExstractBean resultExstractBean){
+        Object result = null;
+        String sqlType = resultExstractBean.getFunction().getSqlType();
+        switch (sqlType){
+            case Consts. SELECT :
+                String resultType = resultExstractBean.getFunction().getResultType();
+                Class<?> methodReturnType = resultExstractBean.getFunction().getMethodReturnType();
+                if(methodReturnType .isAssignableFrom(List.class) ){
+                    if(StringUtils.isEmpty(resultType)){
+                        String typeName = resultExstractBean.getFunction().getMethod().getGenericReturnType().getTypeName();
+                        if(typeName .contains("Map")){
+                            result = selectListMap(resultExstractBean);
+                        }else{
+                            result = selectList(resultExstractBean);
+                        }
                     }else{
-                        value = this.selectOne(function,params,list);
+                        if(resultType . contains("Map")){
+                            result = selectListMap(resultExstractBean);
+                        }else{
+                            result = selectList(resultExstractBean);
+                        }
                     }
+                }else if(methodReturnType .isAssignableFrom(java.util.Map.class)){
+                    result = this.selectMap(resultExstractBean);
+                }else if(methodReturnType .isAssignableFrom(String.class)){
+                    result = this.selectOne(resultExstractBean);
+                }else if(methodReturnType. isAssignableFrom(int.class) || methodReturnType.isAssignableFrom(Integer .class) ){
+                    result = selectOne(resultExstractBean);
+                }else {
+                    result = this.selectOne(resultExstractBean);
                 }
-            }
-            return value;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+                break;
+            case Consts . UPDATE :
+                result = update(resultExstractBean);
+                break;
+            case Consts . DELETE :
+                result = delete(resultExstractBean);
+                break;
+            case Consts . INSERT  :
+                result = insert(resultExstractBean);
+                break;
+            default:
+                throw  new RuntimeException("请检查Mapper中配置是否正确");
         }
-        return  null;
+        return result;
     }
 }

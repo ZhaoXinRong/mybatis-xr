@@ -24,48 +24,72 @@ public class SimpleExecutor extends  AbstractExecutor {
     private ResultHandler resultHandler = new ResultHandlerImpl();
 
     @Override
-    protected <T> T selectOne(Function function, Object[] params, List<T> resultList) {
-        try {
-            return resultHandler.resultPoJoHandler(resultList,Class.forName(function.getResultType()));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    protected <T> List<T> selectList(Function function, Object[] params, PreparedStatement ps) {
-        logger(function, params);
+    protected <T> T selectOne(ResultExstractBean resultExstractBean) {
+        logger(resultExstractBean.getFunction(),resultExstractBean.getArags());
         ResultSet resultSet = null;
         try {
-            resultSet = ps.executeQuery();
-            return (List<T>) resultHandler.resultListHandler(resultSet,Class.forName(function.getResultType()));
+            resultSet = resultExstractBean.getPreparedStatement().executeQuery();
+            Class<?> methodReturnType = resultExstractBean.getFunction().getMethodReturnType();
+             if(methodReturnType .isAssignableFrom(String.class)){
+                return (T) resultHandler.resultStringHandler(resultSet);
+            }else if(methodReturnType. isAssignableFrom(int.class) || methodReturnType.isAssignableFrom(Integer .class) ) {
+                return (T)resultHandler.resultIntHandler(resultSet);
+            }else{
+                 return resultHandler.resultPoJoHandler(resultSet, resultExstractBean.getFunction().getMethodReturnType());
+             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }finally {
-            close(resultSet);
         }
         return null;
     }
 
     @Override
-    protected <T> List<Map<String, Object>> selectListMap(Function function, Object[] params, List<T> resultList) {
-        return resultHandler.resultListHandler(resultList);
-    }
-
-    @Override
-    protected <T> Map<String, Object> selectMap(Function function, Object[] params, List<T> resultList) {
-        return resultHandler.resultMapHandler(resultList);
-    }
-
-    @Override
-    protected int update(Function function, Object[] params, PreparedStatement ps) {
-        logger(function, params);
+    protected <T> List<T> selectList(ResultExstractBean resultExstractBean) {
+        logger(resultExstractBean.getFunction(),resultExstractBean.getArags());
+        ResultSet resultSet = null;
         try {
-            int i  = ps.executeUpdate();
-            return resultHandler.resultIntHandler(i);
+            resultSet = resultExstractBean.getPreparedStatement().executeQuery();
+            return (List<T>) resultHandler.resultListHandler(resultSet,Class.forName(resultExstractBean.getFunction().getResultType()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    protected <T> List<Map<String, Object>> selectListMap(ResultExstractBean resultExstractBean) {
+        logger(resultExstractBean.getFunction(),resultExstractBean.getArags());
+        ResultSet resultSet = null;
+        try {
+            resultSet = resultExstractBean.getPreparedStatement().executeQuery();
+            return resultHandler.resultListHandler(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    protected <T> Map<String, Object> selectMap(ResultExstractBean resultExstractBean) {
+        logger(resultExstractBean.getFunction(),resultExstractBean.getArags());
+        ResultSet resultSet = null;
+        try {
+            resultSet = resultExstractBean.getPreparedStatement().executeQuery();
+            return resultHandler.resultMapHandler(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    protected int update(ResultExstractBean resultExstractBean) {
+        logger(resultExstractBean.getFunction(),resultExstractBean.getArags());
+        try {
+            int i  = resultExstractBean.getPreparedStatement().executeUpdate();
+            return i;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -73,11 +97,11 @@ public class SimpleExecutor extends  AbstractExecutor {
     }
 
     @Override
-    protected int delete(Function function, Object[] params, PreparedStatement ps) {
-        logger(function, params);
+    protected int delete(ResultExstractBean resultExstractBean) {
+        logger(resultExstractBean.getFunction(),resultExstractBean.getArags());
         try {
-            int i  = ps.executeUpdate();
-            return resultHandler.resultIntHandler(i);
+            int i  = resultExstractBean.getPreparedStatement().executeUpdate();
+            return i;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -85,11 +109,11 @@ public class SimpleExecutor extends  AbstractExecutor {
     }
 
     @Override
-    protected int insert(Function function, Object[] params, PreparedStatement ps) {
-        logger(function, params);
+    protected int insert(ResultExstractBean resultExstractBean) {
+        logger(resultExstractBean.getFunction(),resultExstractBean.getArags());
         try {
-            int i  = ps.executeUpdate();
-            return resultHandler.resultIntHandler(i);
+            int i  = resultExstractBean.getPreparedStatement().executeUpdate();
+            return i;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -110,17 +134,6 @@ public class SimpleExecutor extends  AbstractExecutor {
             log.info(">>>>>>>>>>>>> : {}",sb.toString().length() > 0 ? sb.toString().substring(0,sb.toString().lastIndexOf(",")) : "" );
         }
 
-    }
-
-
-    private void close(ResultSet resultSet){
-        if(resultSet != null){
-            try {
-                resultSet.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }

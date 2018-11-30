@@ -9,4 +9,21 @@
         select * from user where id = #{id}
     </select>
 
+    <select id="getUserMap" resultType="java.util.Map">
+        select * from user limit 1
+    </select>
+
+    <select id="getUsername" resultType="java.util.Map">
+        select username from user limit 1
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(1) from user
+    </select>
+
+
+    <insert id="insert" parameterType="com.snowruin.mybatis.demo.entity.User">
+        insert into user(username,password)values(#{username},#{passowrd})
+    </insert>
+
 </mapper>

@@ -14,15 +14,15 @@ import java.util.Map;
  **/
 public interface ResultHandler {
 
-    <T> java.util.Map resultMapHandler(List<T> t) ;
+    <T> java.util.Map resultMapHandler(ResultSet resultSet) ;
 
     <T> List<T> resultListHandler(ResultSet resultSet,Class<T> clazz)  throws SQLException;
 
-    <T> List<Map<String, Object>> resultListHandler(List<T> list);
+    <T> List<Map<String, Object>> resultListHandler(ResultSet resultSet);
 
-    <T> T resultPoJoHandler(List<T> list, Class<?> clazz);
+    <T> T resultPoJoHandler(ResultSet resultSet, Class<?> clazz);
 
-    int resultIntHandler(Integer result);
+    Integer resultIntHandler(ResultSet resultSet);
 
-    String resultStringHandler(String result);
+    String resultStringHandler(ResultSet resultSet);
 }

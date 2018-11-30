@@ -19,30 +19,25 @@ import java.util.*;
 public class ResultHandlerImpl extends  AbstractResultHandler {
 
     @Override
-    protected <T>Map mapHandler(List<T> resultList) {
-        if(resultList != null && resultList.size() > 0){
-            try {
-                return MapUtils.objectToMap(resultList.get(0));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+    protected <T>Map mapHandler(ResultSet resultSet) {
+        try {
+            return resultSetMap(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            close(resultSet);
         }
         return null;
     }
 
     @Override
-    protected <T> List<Map<String, Object>> listHandler(List<T> list) {
-        if(list != null && list.size() > 0){
-            List<Map<String, Object>> list1 =  Lists.newArrayList();
-            try {
-                for (T t : list){
-                    Map<String, Object> stringObjectMap = MapUtils.objectToMap(t);
-                    list1.add(stringObjectMap);
-                }
-                return list1;
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+    protected <T> List<Map<String, Object>> listHandler(ResultSet resultSet) {
+        try {
+            return resultList(resultSet,null);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            close(resultSet);
         }
         return null;
     }
@@ -53,38 +48,52 @@ public class ResultHandlerImpl extends  AbstractResultHandler {
             return resultList(resultSet,clazz);
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            close(resultSet);
         }
         return null;
     }
 
     @Override
-    protected <T> T pojoHandler(List<T> list, Class<?> clazz) {
-        T t1 = list.get(0);
-        if(t1 instanceof  java.util.Map){
+    protected <T> T pojoHandler(ResultSet resultSet, Class<?> clazz) {
+        if(!"void" .equals(clazz.getSimpleName())  ){
             try {
-               return (T) MapUtils.mapToObject((Map)t1,clazz);
+                T o = (T) clazz.newInstance();
+                Map<String,Object> map = resultSetMap(resultSet);
+                return MapUtils.mapToObject(map,o);
+            } catch (InstantiationException e) {
+                e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }finally {
+                close(resultSet);
             }
+            return null;
         }
-        return t1;
+        return null;
     }
 
 
     private Map resultSetMap(ResultSet resultSet) throws  SQLException{
         Map<String, Object> resultMap = Maps.newHashMap();
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        for (int i= 1;i<columnCount;i++){
-            String columnName = metaData.getColumnName(i);
-            Object value = resultSet.getObject(i);
-            resultMap.put(columnName,value);
+        if(resultSet.next()){
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            for (int i= 1;i<columnCount;i++){
+                String columnName = metaData.getColumnName(i);
+                Object value = resultSet.getObject(i);
+                resultMap.put(columnName,value);
+            }
+            return resultMap;
         }
-        resultSet.close();
-        return resultMap;
+        return null;
+
     }
 
     private <T>List<T> resultList(ResultSet resultSet,Class clazz)  throws  SQLException{
+
         if(clazz == null){
            return (List<T>) resultList(resultSet);
         }else{
@@ -122,6 +131,11 @@ public class ResultHandlerImpl extends  AbstractResultHandler {
             T t = null;
             for (Map<String,Object> map : maps){
                 t = clazz.newInstance();
+                /*if(clazz.isAssignableFrom(Map.class)){
+                    t  = (T) new  HashMap();
+                }else{
+                    t = clazz.newInstance();
+                }*/
                 T t1 = MapUtils.mapToObject(map,t);
                 resultList.add(t1);
             }

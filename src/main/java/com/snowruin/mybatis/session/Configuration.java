@@ -5,6 +5,7 @@ import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.Mapper.MapperBean;
 import com.snowruin.mybatis.enums.EnumMapper;
 import com.snowruin.mybatis.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -12,6 +13,7 @@ import org.dom4j.io.SAXReader;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -25,6 +27,7 @@ import java.util.List;
  * @Date 2018/11/27 14:03
  * @Version 1.0
  **/
+@Slf4j
 public class Configuration {
 
     private static  final ClassLoader classLoader = ClassLoader.getSystemClassLoader();
@@ -165,21 +168,21 @@ public class Configuration {
 
                 for (Method method : methods){
                     if(method.getName() . equals( functionName )){
-                       String returnType = method.getReturnType().getName();
-                       function.setMethodReturnType(returnType);
+                       function.setMethodReturnType(method.getReturnType())
+                                .setMethod(method);
                     }
                 }
-                Object newInstance = null;
-
-                try {
-                    newInstance = Class.forName(resultType).newInstance();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+//                Object newInstance = null;
+//
+//                try {
+//                    newInstance = Class.forName(resultType).newInstance();
+//                } catch (InstantiationException e) {
+//                    e.printStackTrace();
+//                } catch (IllegalAccessException e) {
+//                    e.printStackTrace();
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
                 function.setResultType(resultType)
                         .setSql(sql);
                 functions.add(function);

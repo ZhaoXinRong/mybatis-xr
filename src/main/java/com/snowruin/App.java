@@ -6,6 +6,7 @@ import com.snowruin.mybatis.enums.EnumMapper;
 import com.snowruin.mybatis.session.SqlSession;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Hello world!
@@ -19,10 +20,16 @@ public class App
 
         SqlSession sqlSession = new SqlSession();
         UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-       // User user =  mapper.getUserById(1);
+        //User user =  mapper.getUserById(1);
+        //List<User> users =  mapper.selectList();
 
-        List<User> users =  mapper.selectList();
-        System.out.println(users);
+//        Map<String, Object> userMap = mapper.getUserMap();
+
+       // String username = mapper.getUsername();
+
+        int count = mapper.selectCount();
+
+        System.out.println(count);
 
 
 

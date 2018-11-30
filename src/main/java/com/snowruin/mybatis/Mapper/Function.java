@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.lang.reflect.Method;
+
 /**
  * @ClassName Function
  * @Description TODO 接口下的方法
@@ -26,6 +28,8 @@ public class Function {
 
     private String parameterType;
 
-    private String methodReturnType;
+    private Class<?> methodReturnType;
+
+    private Method method;
 
 }
