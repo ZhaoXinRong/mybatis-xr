@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.consts.Consts;
+import com.snowruin.mybatis.exception.MybatisException;
 import com.snowruin.mybatis.util.StringUtils;
 import lombok.Getter;
 
@@ -33,13 +34,14 @@ public class MapSqlParser implements  BasicSqlParser {
 
     public MapSqlParser(Function function,Object param){
         this . function = function;
+        this . param = param;
     }
 
 
     @Override
     public String parser() {
         if(!(this.param instanceof  java.util.Map)){
-            throw  new RuntimeException("解析器错误");
+            throw  new MybatisException("解析器错误");
         }
 
         java.util.Map paramsMap =  (java.util.Map)param;
@@ -75,47 +77,4 @@ public class MapSqlParser implements  BasicSqlParser {
         this.params = values;
         return function.getSql();
     }
-
-
-   /* public static void main(String[] args) {
-        String sql = "select * from t_user where username = #{aaaa} and password = #{bbbb}";
-
-        Pattern pattern = Pattern.compile(Consts.sqlParamsReg);
-        Matcher matcher = pattern.matcher(sql);
-
-        List<String>  paramsNameList = Lists.newArrayList();
-        Map<String, Object> paramsMap = Maps.newHashMap();
-        paramsMap.put("aaaa","1111");
-        paramsMap.put("bbbb",232234);
-
-        while(matcher.find()){
-            String group = matcher.group();
-            if(StringUtils.isNotEmpty(group)){
-               group =  group.replace("#{","").replace("}","");
-               paramsNameList.add(group);
-            }
-        }
-
-        sql = matcher.replaceAll("?");
-
-        List<Object> values = Lists.newArrayList();
-
-        Set<Map.Entry<String, Object>> entries = paramsMap.entrySet();
-
-        for (String param: paramsNameList){
-            String key = "";
-            if(param .contains(".") ){
-                key = param.replace(param . substring(0,param.lastIndexOf(".")),"");
-            }else{
-                key = param;
-            }
-            for(Map.Entry<String, Object> entry : entries){
-                if(entry.getKey() .equals(key)){
-                    values.add(entry.getValue());
-                }
-            }
-        }
-
-        System.out.println(values);
-    }*/
 }

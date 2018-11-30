@@ -131,11 +131,6 @@ public class ResultHandlerImpl extends  AbstractResultHandler {
             T t = null;
             for (Map<String,Object> map : maps){
                 t = clazz.newInstance();
-                /*if(clazz.isAssignableFrom(Map.class)){
-                    t  = (T) new  HashMap();
-                }else{
-                    t = clazz.newInstance();
-                }*/
                 T t1 = MapUtils.mapToObject(map,t);
                 resultList.add(t1);
             }

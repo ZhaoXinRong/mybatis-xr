@@ -4,6 +4,7 @@ import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.Sql.SqlParser;
 import com.snowruin.mybatis.Sql.SqlParserBean;
 import com.snowruin.mybatis.consts.Consts;
+import com.snowruin.mybatis.exception.MybatisException;
 import com.snowruin.mybatis.session.Configuration;
 import com.snowruin.mybatis.util.StringUtils;
 
@@ -115,7 +116,7 @@ public abstract class AbstractExecutor implements Executor {
                 result = insert(resultExstractBean);
                 break;
             default:
-                throw  new RuntimeException("请检查Mapper中配置是否正确");
+                throw  new MybatisException("请检查Mapper中配置是否正确");
         }
         return result;
     }

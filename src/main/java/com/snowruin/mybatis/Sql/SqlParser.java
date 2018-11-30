@@ -2,6 +2,7 @@ package com.snowruin.mybatis.Sql;
 
 import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.enums.EnumSqlParamType;
+import com.snowruin.mybatis.exception.MybatisException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class SqlParser {
                 return new SqlParserBean(objectSqlParser.getOrder(),objectSqlParser.getParams(),EnumSqlParamType.OBJECT);
             }
         }
-        throw  new RuntimeException("改参数不能解析");
+        throw  new MybatisException("该参数不能解析");
     }
 
 

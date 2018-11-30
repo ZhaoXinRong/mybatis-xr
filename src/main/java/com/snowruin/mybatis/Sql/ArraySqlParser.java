@@ -2,6 +2,7 @@ package com.snowruin.mybatis.Sql;
 
 import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.consts.Consts;
+import com.snowruin.mybatis.exception.MybatisException;
 import com.snowruin.mybatis.util.StringUtils;
 import lombok.Getter;
 
@@ -29,7 +30,7 @@ public class ArraySqlParser implements  BasicSqlParser {
     public String parser() {
 
         if(StringUtils.isEmpty(function.getSql())){
-            throw  new RuntimeException("sql语句不能为空");
+            throw  new MybatisException("sql语句不能为空");
         }
 
         Pattern compile = Pattern.compile(Consts.sqlParamsReg);
@@ -38,8 +39,8 @@ public class ArraySqlParser implements  BasicSqlParser {
         while(matcher.find()){
             order++;
         }
-        String sqlString = matcher.replaceAll("?");
+        function.setSql(matcher.replaceAll("?")) ;
 
-        return sqlString;
+        return function.getSql();
     }
 }

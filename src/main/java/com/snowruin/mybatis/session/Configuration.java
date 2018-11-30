@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.Mapper.MapperBean;
 import com.snowruin.mybatis.enums.EnumMapper;
+import com.snowruin.mybatis.exception.MybatisException;
 import com.snowruin.mybatis.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
@@ -58,7 +59,7 @@ public class Configuration {
     private Connection evalDataSource(Element element){
 
         if(!element.getName() . equals("database")){
-            throw  new RuntimeException("不是database节点");
+            throw  new MybatisException("不是database节点");
         }
 
         String driverClassName = null,
@@ -73,7 +74,7 @@ public class Configuration {
             String name = e.attributeValue("name");
 
             if(StringUtils.isEmpty(value) || StringUtils.isEmpty(name)){
-                throw  new RuntimeException("配置文件有误，请检查");
+                throw  new MybatisException("配置文件有误，请检查");
             }
 
             // 赋值
@@ -91,7 +92,7 @@ public class Configuration {
                     driverClassName =  value;
                     break;
                     default :
-                        throw  new RuntimeException("不知道的property属性");
+                        throw  new MybatisException("不知道的property属性");
             }
         }
 
