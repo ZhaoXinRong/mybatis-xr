@@ -133,7 +133,6 @@ public class SimpleExecutor extends  AbstractExecutor {
             }
             log.info(">>>>>>>>>>>>> : {}",sb.toString().length() > 0 ? sb.toString().substring(0,sb.toString().lastIndexOf(",")) : "" );
         }
-
     }
 
 }
