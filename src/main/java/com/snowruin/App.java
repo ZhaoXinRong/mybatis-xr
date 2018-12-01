@@ -1,13 +1,14 @@
 package com.snowruin;
 
+import com.google.common.collect.Maps;
 import com.snowruin.mybatis.demo.dao.UserMapper;
 import com.snowruin.mybatis.demo.entity.User;
 import com.snowruin.mybatis.enums.EnumMapper;
-import com.snowruin.mybatis.jdbc.JdbcPool;
 import com.snowruin.mybatis.session.SqlSession;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class App
 
         SqlSession sqlSession = new SqlSession();
         UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-        User user =  mapper.getUserById("3dcebbc1-6f71-4ebc-aa24-3df58e70d910");
+//        User user =  mapper.getUserById("3dcebbc1-6f71-4ebc-aa24-3df58e70d910");
         //List<User> users =  mapper.selectList();
 
 //        Map<String, Object> userMap = mapper.getUserMap();
@@ -41,7 +42,22 @@ public class App
 
 //        int 王五 = mapper.updateById(new User().setPassword("222").setUsername("王五").setId("b6616d46-122e-4866-8ca3-356f05861c76"));
 //
+        HashMap<String, Object> objectObjectHashMap = Maps.newHashMap();
+        objectObjectHashMap.put("name","王五");
+        objectObjectHashMap.put("pass","222");
+        java.util.Map user = mapper.selectMap(objectObjectHashMap);
         System.out.println(user);
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }

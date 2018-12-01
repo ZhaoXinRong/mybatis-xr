@@ -14,6 +14,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.LinkedList;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 /**
@@ -26,57 +28,68 @@ import java.util.logging.Logger;
 @Slf4j
 public class JdbcPool implements DataSource {
 
-    private static LinkedList<Connection> connections =  Lists.newLinkedList();
+    private static volatile LinkedList<Connection> connections =  Lists.newLinkedList();
 
-    private void initJdbcPool(Jdbc jdbc){
-        {
-            try {
+    private ReentrantLock lock = new ReentrantLock();
 
-                Class.forName(jdbc.getDriverClassName());
+    public JdbcPool (Jdbc jdbc){
+        initJdbcPool(jdbc);
+    }
 
-                for (int i = 0; i < jdbc.getPoolInitSize() ; i++) {
-                    Connection connection = DriverManager.getConnection(jdbc.getUrl(), jdbc.getUsername(), jdbc.getPassword());
-                    connections.add(connection);
-                }
-                log.info("数据库连接池初始化完成，大小是： {}",connections.size());
 
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
+    private static void initJdbcPool(Jdbc jdbc){
+        try {
+
+            Class.forName(jdbc.getDriverClassName());
+            for (int i = 0; i < jdbc.getPoolInitSize() ; i++) {
+                Connection connection = DriverManager.getConnection(jdbc.getUrl(), jdbc.getUsername(), jdbc.getPassword());
+                connections.add(connection);
             }
+            log.info("数据库连接池初始化完成，大小是： {}",connections.size());
 
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    public JdbcPool(Jdbc jdbc){
-        initJdbcPool(jdbc);
-    }
 
     @Override
     public Connection getConnection() throws SQLException {
 
-        if(connections.size() > 0){
-            // 获取一个连接
-            Connection connection = connections.removeFirst();
-            log.info("获取到了一个连接，目前还剩"+connections.size()+"个连接");
+        try {
+            lock.lock();
+            Condition condition = lock.newCondition();
+            if(connections.size() > 0){
+                // 获取一个连接
+                Connection connection = connections.removeFirst();
+                log.info("获取到了一个连接，目前还剩"+connections.size()+"个连接");
 
-            return (Connection) Proxy.newProxyInstance(JdbcPool.class.getClassLoader(), connection.getClass().getInterfaces(), new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                   if(!method.getName().equals("close")){
-                       return method.invoke(connection,args);
-                   }else{
-                       // 如果调用的是connection 对象的close 方法,则把conn还给数据库连接池
-                       connections.add(connection);
-                       log.info("连接已归还连接池了，现在还剩"+connections.size()+"个连接");
-                       return null;
-                   }
-                }
-            });
-        }else{
-            throw  new MybatisException("数据库繁忙");
+                return (Connection) Proxy.newProxyInstance(JdbcPool.class.getClassLoader(), connection.getClass().getInterfaces(), new InvocationHandler() {
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        if(!method.getName().equals("close")){
+                            return method.invoke(connection,args);
+                        }else{
+                            // 如果调用的是connection 对象的close 方法,则把conn还给数据库连接池
+                            connections.add(connection);
+                            log.info("连接已归还连接池了，现在还剩"+connections.size()+"个连接");
+                            condition.signal();
+                            return null;
+                        }
+
+                    }
+                });
+            }else{
+                condition.await();
+            }
+        }catch (Exception e){
+            throw  new MybatisException("发生异常",e);
+        }finally {
+            lock.unlock();
         }
+        return  null;
     }
 
     @Override

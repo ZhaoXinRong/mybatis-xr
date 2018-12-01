@@ -38,4 +38,8 @@
         update user set username = #{username} , password = #{password} where id = #{id}
     </update>
 
+    <select id="selectMap" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from user where username = #{name} and password = #{pass}  limit 1
+    </select>
+
 </mapper>

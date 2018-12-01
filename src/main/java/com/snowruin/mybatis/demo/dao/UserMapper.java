@@ -30,4 +30,6 @@ public interface UserMapper {
     User selectA(User user);
 
     int updateById(User user);
+
+    public java.util.Map selectMap(java.util.Map map);
 }
