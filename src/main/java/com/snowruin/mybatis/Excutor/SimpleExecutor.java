@@ -5,7 +5,6 @@ import com.snowruin.mybatis.handler.ResultHandler;
 import com.snowruin.mybatis.handler.ResultHandlerImpl;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;

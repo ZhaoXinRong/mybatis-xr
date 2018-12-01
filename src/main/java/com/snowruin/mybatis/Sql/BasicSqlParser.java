@@ -1,6 +1,5 @@
 package com.snowruin.mybatis.Sql;
 
-import com.snowruin.mybatis.Mapper.Function;
 
 /**
  * @ClassName BasicSqlParser

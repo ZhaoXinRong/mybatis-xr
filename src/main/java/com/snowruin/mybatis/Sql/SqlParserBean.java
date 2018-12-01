@@ -1,6 +1,5 @@
 package com.snowruin.mybatis.Sql;
 
-import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.enums.EnumSqlParamType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

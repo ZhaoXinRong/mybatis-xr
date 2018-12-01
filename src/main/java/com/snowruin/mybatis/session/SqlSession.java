@@ -1,7 +1,6 @@
 package com.snowruin.mybatis.session;
 
 import com.snowruin.mybatis.Excutor.Executor;
-import com.snowruin.mybatis.Excutor.AbstractExecutor;
 import com.snowruin.mybatis.Excutor.SimpleExecutor;
 import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.Mapper.MapperProxy;

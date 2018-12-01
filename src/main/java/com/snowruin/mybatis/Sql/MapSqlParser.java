@@ -1,8 +1,6 @@
 package com.snowruin.mybatis.Sql;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.consts.Consts;
 import com.snowruin.mybatis.exception.MybatisException;

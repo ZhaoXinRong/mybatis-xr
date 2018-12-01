@@ -17,7 +17,6 @@ import org.dom4j.io.SAXReader;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
