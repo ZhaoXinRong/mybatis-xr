@@ -25,7 +25,7 @@ public class MapUtils {
      * @throws IllegalAccessException
      */
     public static  <T> T mapToObject(java.util.Map<String,Object> map, T t) throws IllegalAccessException {
-        if(isEmpty(map) || isNull(map)){
+        if(isNull(map)  ||  isEmpty(map)){
             return null;
         }
 

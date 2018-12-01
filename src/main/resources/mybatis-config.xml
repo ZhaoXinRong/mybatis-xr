@@ -4,4 +4,5 @@
     <property name="username">root</property>
     <property name="password">123456</property>
     <property name="url">jdbc:mysql://localhost:3306/mybatis</property>
+    <property name="poolInitSize">5</property>
 </database>

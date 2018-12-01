@@ -5,6 +5,8 @@ import com.snowruin.mybatis.Mapper.Function;
 import com.snowruin.mybatis.Mapper.MapperBean;
 import com.snowruin.mybatis.enums.EnumMapper;
 import com.snowruin.mybatis.exception.MybatisException;
+import com.snowruin.mybatis.jdbc.Jdbc;
+import com.snowruin.mybatis.jdbc.JdbcPool;
 import com.snowruin.mybatis.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
@@ -65,6 +67,7 @@ public class Configuration {
         String driverClassName = null,
                url = null,
                username = null,
+               poolInitSize = null,
                password = null;
 
         // 获取属性节点
@@ -91,23 +94,27 @@ public class Configuration {
                 case "driverClassName" :
                     driverClassName =  value;
                     break;
+                case "poolInitSize" :
+                    poolInitSize = value;
+                    break;
                     default :
                         throw  new MybatisException("不知道的property属性");
             }
         }
 
+
         try {
-            Class.forName(driverClassName);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(url, username, password);
+            return new JdbcPool(new Jdbc()
+                                                    .setDriverClassName(driverClassName)
+                                                    .setPassword(password)
+                                                    .setUrl(url)
+                                                    .setUsername(username)
+                                                    .setPoolInitSize(StringUtils.isEmpty(poolInitSize) ? 10 : Integer.parseInt(poolInitSize))
+                                                ).getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return connection;
+        return null;
     }
 
 

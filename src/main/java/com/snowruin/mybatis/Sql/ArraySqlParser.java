@@ -39,6 +39,7 @@ public class ArraySqlParser implements  BasicSqlParser {
         while(matcher.find()){
             order++;
         }
+        this.order = order;
         function.setSql(matcher.replaceAll("?")) ;
 
         return function.getSql();

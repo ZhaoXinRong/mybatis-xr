@@ -15,7 +15,7 @@ public interface UserMapper {
 
     public List<User> selectList();
 
-    public User getUserById(Integer id);
+    public User getUserById(String id);
 
     public java.util.Map<String,Object> getUserMap();
 
