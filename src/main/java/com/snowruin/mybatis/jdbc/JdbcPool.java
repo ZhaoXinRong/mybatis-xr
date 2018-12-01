@@ -52,8 +52,6 @@ public class JdbcPool implements DataSource {
         }
     }
 
-
-
     public JdbcPool(Jdbc jdbc){
         initJdbcPool(jdbc);
     }
