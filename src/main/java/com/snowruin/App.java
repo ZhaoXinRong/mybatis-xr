@@ -5,6 +5,7 @@ import com.snowruin.mybatis.demo.dao.UserMapper;
 import com.snowruin.mybatis.demo.entity.User;
 import com.snowruin.mybatis.enums.EnumMapper;
 import com.snowruin.mybatis.session.SqlSession;
+import com.snowruin.mybatis.session.SqlSessionFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -23,8 +24,8 @@ public class App
     {
         System.out.println( "Hello World!" );
 
-        SqlSession sqlSession = new SqlSession();
-        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        UserMapper mapper = new SqlSessionFactory().openSession().getMapper(UserMapper.class);
+
 //        User user =  mapper.getUserById("3dcebbc1-6f71-4ebc-aa24-3df58e70d910");
         //List<User> users =  mapper.selectList();
 
